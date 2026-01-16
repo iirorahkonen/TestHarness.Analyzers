@@ -5,6 +5,33 @@
 
 A Roslyn analyzer library that detects code patterns blocking "seams" in legacy code, based on Michael Feathers' [Working Effectively with Legacy Code](https://www.oreilly.com/library/view/working-effectively-with/0131177052/).
 
+## Use Cases
+
+### 1. Legacy Code Refactoring
+
+When working with legacy code, this analyzer helps you identify where to create seams so you can test a class. By detecting the 18 anti-patterns that block testability, you can systematically refactor code to introduce dependency injection points, extract interfaces, and break hard dependencies—making previously untestable code testable.
+
+### 2. AI-Assisted Development (Modern)
+
+**This is the game-changer for modern development workflows.**
+
+When you enable these analyzers as warnings or errors in your build, AI coding assistants (like GitHub Copilot, Claude, Cursor, etc.) will automatically avoid generating untestable patterns. The AI sees the build failures and adapts its code generation to produce testable, well-architected code from the start.
+
+```xml
+<!-- In your .editorconfig or Directory.Build.props -->
+<PropertyGroup>
+  <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+</PropertyGroup>
+```
+
+This creates a **guardrail effect**: instead of the AI generating code with hard dependencies that you'll need to refactor later, it diverges to patterns that are testable by design—dependency injection, interface abstractions, and proper separation of concerns.
+
+**Why this matters:**
+- AI coding assistants read compiler output and adjust their suggestions
+- Build failures from SEAM rules guide AI toward better patterns
+- You get testable code from the first generation, not after painful refactoring
+- The analyzer becomes a "teaching tool" for AI assistants about your architecture standards
+
 ## What are Seams?
 
 A **seam** is a place where you can alter behavior in your program without editing in that place. Seams are essential for testing because they allow you to substitute dependencies, mock behaviors, and isolate code under test.
