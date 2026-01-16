@@ -2,7 +2,7 @@ mode: ContinuousDelivery
 next-version: 0.1.0
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatchTag
-label-prefix: '[vV]?'
+tag-prefix: '[vV]?'
 
 branches:
   main:

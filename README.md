@@ -100,6 +100,10 @@ public class OrderService
 
 Contributions are welcome! Please see [CONTRIBUTING.md](.github/CONTRIBUTING.md) for guidelines.
 
+## Acknowledgments
+
+This project is inspired by Michael Feathers' book [Working Effectively with Legacy Code](https://www.oreilly.com/library/view/working-effectively-with/0131177052/). The concept of "seams" as places where you can alter program behavior without editing in that place comes directly from his work. Thank you to Michael Feathers for providing such valuable insights into making legacy code testable.
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
