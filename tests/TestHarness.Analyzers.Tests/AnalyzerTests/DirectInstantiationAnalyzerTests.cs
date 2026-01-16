@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.Testing;
 using TestHarness.Analyzers.Analyzers.DirectDependencies;
 using TestHarness.Analyzers.Tests.Verifiers;
 using Xunit;
@@ -8,6 +7,31 @@ namespace TestHarness.Analyzers.Tests.AnalyzerTests;
 
 public class DirectInstantiationAnalyzerTests
 {
+    [Fact]
+    public async Task DirectInstantiation_ExternalServiceType_ShouldReportDiagnostic()
+    {
+        // External types with behavior (not data classes) should be flagged
+        // Note: Only types from external assemblies are flagged; local types are skipped
+        const string source = """
+            using System.Data.SqlClient;
+
+            public class DataService
+            {
+                public void Execute()
+                {
+                    var connection = {|#0:new SqlConnection("connection string")|};
+                }
+            }
+            """;
+
+        var expected = CSharpAnalyzerVerifier<DirectInstantiationAnalyzer>
+            .Diagnostic("SEAM001")
+            .WithLocation(0)
+            .WithArguments("SqlConnection");
+
+        await CSharpAnalyzerVerifier<DirectInstantiationAnalyzer>.VerifyAnalyzerAsync(source, expected);
+    }
+
     [Fact]
     public async Task DirectInstantiation_HttpClient_HandledByDedicatedAnalyzer()
     {
