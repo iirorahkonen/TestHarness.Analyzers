@@ -2,7 +2,7 @@ mode: ContinuousDeployment
 next-version: 0.1.0
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatchTag
-tag-prefix: '[vV]?'
+label-prefix: '[vV]?'
 version-in-branch-name: false
 merge-message-formats: []
 
@@ -10,7 +10,7 @@ branches:
   main:
     regex: ^main$
     mode: ContinuousDeployment
-    tag: ''
+    label: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
@@ -28,7 +28,7 @@ branches:
   feature:
     regex: ^feature[/-]
     mode: ContinuousDeployment
-    tag: alpha
+    label: alpha
     increment: Inherit
     source-branches:
       - main
@@ -38,9 +38,9 @@ branches:
   pull-request:
     regex: ^(pull|pull\-requests|pr)[/-]
     mode: ContinuousDeployment
-    tag: PullRequest
+    label: PullRequest
     increment: Inherit
-    tag-number-pattern: '[/-](?<number>\d+)'
+    label-number-pattern: '[/-](?<number>\d+)'
     source-branches:
       - main
       - develop
@@ -52,7 +52,7 @@ branches:
   hotfix:
     regex: ^hotfix[/-]
     mode: ContinuousDeployment
-    tag: beta
+    label: beta
     increment: Patch
     source-branches:
       - main
@@ -62,7 +62,7 @@ branches:
   support:
     regex: ^support[/-]
     mode: ContinuousDeployment
-    tag: ''
+    label: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
