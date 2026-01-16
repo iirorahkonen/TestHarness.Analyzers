@@ -38,6 +38,16 @@ public class AuditLogger
         var utc = DateTime.UtcNow;
         Console.WriteLine($"[{utc}] {message}");
     }
+
+#if NET8_0_OR_GREATER
+    public void LogWithTimeProvider(string message)
+    {
+        // SEAM005: TimeProvider.System.GetUtcNow() also creates non-deterministic dependency
+        // Note: TimeProvider was added in .NET 8 - prefer injecting TimeProvider instead
+        var utc = TimeProvider.System.GetUtcNow();
+        Console.WriteLine($"[{utc}] {message}");
+    }
+#endif
 }
 
 // SEAM006 - Guid.NewGuid
@@ -56,6 +66,21 @@ public class EntityFactory
         // SEAM006: Guid.NewGuid creates non-deterministic dependency
         return new Entity { Id = Guid.NewGuid(), Name = name };
     }
+
+#if NET9_0_OR_GREATER
+    public Entity CreateWithVersion7(string name)
+    {
+        // SEAM006: Guid.CreateVersion7 also creates non-deterministic dependency
+        // Note: Available in .NET 9+ only - demonstrates framework-specific patterns
+        return new Entity { Id = Guid.CreateVersion7(), Name = name };
+    }
+
+    public Entity CreateWithVersion7Timestamp(string name, DateTimeOffset timestamp)
+    {
+        // SEAM006: Guid.CreateVersion7 with timestamp - still non-deterministic in production
+        return new Entity { Id = Guid.CreateVersion7(timestamp), Name = name };
+    }
+#endif
 }
 
 // SEAM007 - Environment Variables
