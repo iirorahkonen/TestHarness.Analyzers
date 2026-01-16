@@ -30,7 +30,7 @@ jobs:
       - name: Display Version
         run: |
           echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
-          echo "NuGetVersionV2: ${{ steps.gitversion.outputs.nuGetVersionV2 }}"
+          echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
           echo "AssemblySemVer: ${{ steps.gitversion.outputs.assemblySemVer }}"
 
       - name: Setup .NET
@@ -49,7 +49,7 @@ jobs:
 
       - name: Pack
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: dotnet pack src/TestHarness.Analyzers/TestHarness.Analyzers.csproj --no-build --configuration Release /p:PackageVersion=${{ steps.gitversion.outputs.nuGetVersionV2 }} --output ./artifacts
+        run: dotnet pack src/TestHarness.Analyzers/TestHarness.Analyzers.csproj --no-build --configuration Release /p:PackageVersion=${{ steps.gitversion.outputs.fullSemVer }} --output ./artifacts
 
       - name: Upload NuGet Package
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
