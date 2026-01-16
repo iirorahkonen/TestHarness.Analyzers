@@ -22,6 +22,14 @@ jobs:
         with:
           fetch-depth: 0  # Full history required for GitVersion
 
+      - name: Check for source changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            src:
+              - 'src/Seams.Analyzers/**'
+
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v4
         with:
@@ -36,6 +44,7 @@ jobs:
           echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
           echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
           echo "AssemblySemVer: ${{ steps.gitversion.outputs.assemblySemVer }}"
+          echo "Source changed: ${{ steps.changes.outputs.src }}"
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
@@ -52,11 +61,11 @@ jobs:
         run: dotnet test --no-build --configuration Release --verbosity normal
 
       - name: Pack
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && steps.changes.outputs.src == 'true'
         run: dotnet pack src/Seams.Analyzers/Seams.Analyzers.csproj --no-build --configuration Release /p:PackageVersion=${{ steps.gitversion.outputs.fullSemVer }} --output ./artifacts
 
       - name: Upload NuGet Package
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && steps.changes.outputs.src == 'true'
         uses: actions/upload-artifact@v6
         with:
           name: nuget-package
@@ -64,5 +73,13 @@ jobs:
           retention-days: 30
 
       - name: Publish to NuGet.org
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && steps.changes.outputs.src == 'true'
         run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+      - name: Create Git Tag
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && steps.changes.outputs.src == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v${{ steps.gitversion.outputs.semVer }}" -m "Release v${{ steps.gitversion.outputs.semVer }}"
+          git push origin "v${{ steps.gitversion.outputs.semVer }}"
