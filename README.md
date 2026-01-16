@@ -5,6 +5,41 @@
 
 A Roslyn analyzer library that detects code patterns blocking "seams" in legacy code, based on Michael Feathers' [Working Effectively with Legacy Code](https://www.oreilly.com/library/view/working-effectively-with/0131177052/).
 
+## Use Cases
+
+### 1. AI-Assisted Development
+
+When SEAM rules are configured as warnings or errors, AI coding assistants (GitHub Copilot, Claude, Cursor, Windsurf, etc.) read build failures and adapt their code generation to avoid untestable patterns.
+
+#### How It Works
+
+```
+Developer Request → AI Generation → Analyzer Feedback → AI Iteration → Testable Code
+```
+
+1. AI generates code with a hard dependency (e.g., `new EmailService()`)
+2. Build fails with `SEAM001: Direct instantiation of concrete type 'EmailService'`
+3. AI reads this feedback and regenerates using dependency injection
+4. Resulting code is testable from the start
+
+| Traditional Workflow | With Analyzers |
+|----------------------|----------------|
+| Write code → Analyze → Refactor | Configure rules → AI generates → Testable code |
+| Fix problems after creation | Prevent problems during generation |
+
+#### Setup
+
+```xml
+<!-- Directory.Build.props - enforce as errors -->
+<PropertyGroup>
+  <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+</PropertyGroup>
+```
+
+### 2. Legacy Code Refactoring
+
+When working with legacy code, this analyzer helps you identify where to create seams so you can test a class. By detecting the 18 anti-patterns that block testability, you can systematically refactor code to introduce dependency injection points, extract interfaces, and break hard dependencies—making previously untestable code testable.
+
 ## What are Seams?
 
 A **seam** is a place where you can alter behavior in your program without editing in that place. Seams are essential for testing because they allow you to substitute dependencies, mock behaviors, and isolate code under test.
@@ -98,6 +133,12 @@ dotnet_code_quality.SEAM001.excluded_types = T:MyNamespace.AllowedFactory
 
 # Exclude specific methods from SEAM004
 dotnet_code_quality.SEAM004.excluded_methods = M:System.Console.WriteLine
+
+# Exclude namespaces from SEAM009
+dotnet_code_quality.SEAM009.excluded_namespaces = MyNamespace.Internal
+
+# Set complexity threshold for SEAM011 (default: 50)
+dotnet_code_quality.SEAM011.complexity_threshold = 100
 ```
 
 ## Example
