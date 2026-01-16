@@ -17,7 +17,7 @@ public class ConcreteConstructorParameterAnalyzerTests
 
             public class OrderProcessor
             {
-                public OrderProcessor({|#0:OrderService|} orderService)
+                public OrderProcessor({|#0:OrderService orderService|})
                 {
                 }
             }
@@ -122,7 +122,7 @@ public class ConcreteConstructorParameterAnalyzerTests
 
             public class OrderService
             {
-                public OrderService({|#0:OrderRepository|} repository)
+                public OrderService({|#0:OrderRepository repository|})
                 {
                 }
             }
@@ -146,7 +146,7 @@ public class ConcreteConstructorParameterAnalyzerTests
 
             public class WidgetService
             {
-                public WidgetService({|#0:WidgetFactory|} factory)
+                public WidgetService({|#0:WidgetFactory factory|})
                 {
                 }
             }

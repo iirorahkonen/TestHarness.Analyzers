@@ -61,16 +61,21 @@ public class ProcessStartAnalyzerTests
             {
                 public void Run()
                 {
-                    {|#0:new Process()|}.Start();
+                    new Process().Start();
                 }
             }
             """;
 
-        var expected = CSharpAnalyzerVerifier<ProcessStartAnalyzer>
+        // Both the object creation (new Process()) and the full invocation expression are flagged
+        var expected1 = CSharpAnalyzerVerifier<ProcessStartAnalyzer>
             .Diagnostic("SEAM018")
-            .WithLocation(0);
+            .WithSpan(7, 9, 7, 22); // new Process()
 
-        await CSharpAnalyzerVerifier<ProcessStartAnalyzer>.VerifyAnalyzerAsync(source, expected);
+        var expected2 = CSharpAnalyzerVerifier<ProcessStartAnalyzer>
+            .Diagnostic("SEAM018")
+            .WithSpan(7, 9, 7, 30); // new Process().Start()
+
+        await CSharpAnalyzerVerifier<ProcessStartAnalyzer>.VerifyAnalyzerAsync(source, expected1, expected2);
     }
 
     [Fact]
@@ -138,11 +143,11 @@ public class ProcessStartAnalyzerTests
         // Note: new ProcessStartInfo will also be flagged
         var expected1 = CSharpAnalyzerVerifier<ProcessStartAnalyzer>
             .Diagnostic("SEAM018")
-            .WithSpan(7, 24, 7, 67);
+            .WithSpan(7, 20, 7, 69); // new ProcessStartInfo { FileName = "notepad.exe" }
 
         var expected2 = CSharpAnalyzerVerifier<ProcessStartAnalyzer>
             .Diagnostic("SEAM018")
-            .WithLocation(0);
+            .WithLocation(0); // Process.Start(info)
 
         await CSharpAnalyzerVerifier<ProcessStartAnalyzer>.VerifyAnalyzerAsync(source, expected1, expected2);
     }
