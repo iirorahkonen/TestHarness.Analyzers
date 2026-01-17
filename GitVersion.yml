@@ -1,5 +1,10 @@
+# GitVersion configuration for semantic versioning
+# IMPORTANT: All PRs must include +semver: patch|minor|major in commit message
+# - +semver: patch - Bug fixes, small changes (1.0.0 -> 1.0.1)
+# - +semver: minor - New features, backwards compatible (1.0.0 -> 1.1.0)
+# - +semver: major - Breaking changes (1.0.0 -> 2.0.0)
+
 mode: ContinuousDeployment
-next-version: 1.0.1
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatchTag
 tag-prefix: '[vV]?'
