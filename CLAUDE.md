@@ -135,7 +135,18 @@ This project uses GitVersion for semantic versioning with the following branch c
 3. CI runs on all PRs and main branch pushes
 4. Merge to `main` triggers versioned build and NuGet package
 
-### Version Bumping
-- **Default**: Patch increment (0.1.0 → 0.1.1)
-- **Minor bump**: Include `+semver: minor` in commit message (0.1.0 → 0.2.0)
-- **Major bump**: Include `+semver: major` in commit message (0.1.0 → 1.0.0)
+### Version Bumping (Required for PRs)
+**All PRs must include a `+semver:` tag in the commit message** to specify the version increment:
+
+| Tag | When to Use | Example |
+|-----|-------------|---------|
+| `+semver: patch` | Bug fixes, small changes | 1.0.0 → 1.0.1 |
+| `+semver: minor` | New features, new analyzers | 1.0.0 → 1.1.0 |
+| `+semver: major` | Breaking changes | 1.0.0 → 2.0.0 |
+
+Example commit message:
+```
+Add SEAM020 analyzer for cyclomatic complexity
+
++semver: minor
+```
